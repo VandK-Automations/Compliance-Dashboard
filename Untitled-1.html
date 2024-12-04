@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compliance Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .title h1 {
+      font-size: 24px;
+      margin: 0;
+      color: #333;
+    }
+    .title h2 {
+      font-size: 18px;
+      margin: 5px 0;
+      color: #555;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      text-align: center;
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-size: 14px;
+    }
+    th {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+    .status-na { background-color: #f0f0f0; }       /* Not Applicable */
+    .status-not-due { background-color: #fff8c6; }  /* Not Due */
+    .status-due { background-color: #ffd6d6; }      /* Due */
+    .status-completed { background-color: #c6f7c6; } /* Completed */
+    .view-doc {
+      display: inline-block;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: white;
+      background-color: #007bff;
+      text-decoration: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .view-doc:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <h1>Client Name</h1>
+      <h2>Compliance Dashboard</h2>
+    </div>
+    <table id="dashboard">
+      <!-- Table will be dynamically populated -->
+    </table>
+  </div>
+
+  <script>
+    // Fetch Excel file from OneDrive
+    const excelFileUrl = "https://inc-excel.officeapps.live.com/x/_layouts/XlFileHandler.aspx?WacUserType=WOPI&usid=2c727b90-1350-e194-e98c-2af6847053d0&NoAuth=1&waccluster=IN4";
+
+    fetch(excelFileUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Read data with headers
+          populateTable(json);
+        };
+        reader.readAsArrayBuffer(blob);
+      })
+      .catch(error => console.error("Error fetching Excel file:", error));
+
+    function populateTable(data) {
+      const table = document.getElementById("dashboard");
+
+      // Create table header
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      data[0].forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // Create table body
+      const tbody = document.createElement("tbody");
+      data.slice(1).forEach(row => {
+        const tr = document.createElement("tr");
+        row.forEach((cell, index) => {
+          const td = document.createElement("td");
+
+          if (index > 0 && cell === "Completed") {
+            td.classList.add("status-completed");
+            const link = document.createElement("a");
+            link.href = "#"; // Replace with the actual link from your data
+            link.textContent = "View Doc";
+            link.classList.add("view-doc");
+            link.target = "_blank";
+            td.appendChild(link);
+          } else if (index > 0 && cell === "Due") {
+            td.classList.add("status-due");
+            td.textContent = "Due";
+          } else if (index > 0 && cell === "Not Due") {
+            td.classList.add("status-not-due");
+            td.textContent = "Not Due";
+          } else if (index > 0 && cell === "Not Applicable") {
+            td.classList.add("status-na");
+            td.textContent = "Not Applicable";
+          } else {
+            td.textContent = cell;
+          }
+
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+    }
+  </script>
+</body>
+</html>
