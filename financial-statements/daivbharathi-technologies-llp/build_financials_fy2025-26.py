@@ -138,9 +138,9 @@ setup_print(ms, 'Master!$A$1:$E$42')
 # =====================================================================================
 tb = wb.create_sheet('TB')
 tb.sheet_view.showGridLines = False
-widths(tb, {'A': 46, 'B': 40, 'C': 14.5, 'D': 14.5, 'E': 14.5, 'F': 14.5, 'G': 13, 'H': 13, 'I': 44, 'J': 30})
+widths(tb, {'A': 46, 'B': 40, 'C': 14.5, 'D': 14.5, 'E': 14.5, 'F': 14.5, 'G': 13, 'H': 13, 'I': 44, 'J': 30, 'K': 16, 'L': 14})
 put(tb, 'A1', '=Master!B2', bold=True, size=10)
-put(tb, 'A2', 'Trial Balance (closing balances as per Tally) - mapping to Financial Statements', bold=True)
+put(tb, 'A2', 'Trial Balance (closing balances as per Tally) - mapping to Financial Statements; columns K-L tie each FY 2025-26 balance to the Tally ledger dump', bold=True)
 put(tb, 'A3', '="Current year: "&Master!B10&"   |   Previous year: "&Master!B11', bold=True, size=10)
 TOTALS_PLACEHOLDER = True
 tb.merge_cells('C5:D5'); tb.merge_cells('E5:F5'); tb.merge_cells('G5:H5')
@@ -149,7 +149,7 @@ put(tb, 'E5', '2024-25 (₹) - as per Tally', bold=True, h='center', bottom=THIN
 put(tb, 'G5', 'Rounded Off (÷ Master!B31)', bold=True, h='center', bottom=THIN, fill=YELLOW)
 for col in 'DFH':
     tb[f'{col}5'].border = Border(bottom=THIN)
-hdr = ['Particulars (Tally ledger)', 'Tally Group', 'Debit', 'Credit', 'Debit', 'Credit', 'Amount CY', 'Amount PY', 'Grouping (key used by Notes)', 'Head (Financial Statement caption)']
+hdr = ['Particulars (Tally ledger)', 'Tally Group', 'Debit', 'Credit', 'Debit', 'Credit', 'Amount CY', 'Amount PY', 'Grouping (key used by Notes)', 'Head (Financial Statement caption)', 'Closing per Ledger 23-Mar-26 (Dr +/Cr -)', 'TB less Ledger (must be nil)']
 for i, hname in enumerate(hdr):
     put(tb, f'{get_column_letter(i+1)}6', hname, bold=True, size=10, color='FFFFFFFF', fill=BLUEHDR, h='center', v='center', wrap=True,
         top=THIN, bottom=THIN, left=THIN, right=THIN)
@@ -161,7 +161,7 @@ PC, LTB, OCL, OCA, TP, STLA, CCE, REV, OE, RS = ("Partners' capital", 'Long-term
     'Revenue from operations', 'Other expenses', 'Reserves and surplus')
 rows = [
  ('Samartha  R .N -Captial Account', 'Capital Account / Partners Capital', None, 90000, None, 90000, 'Partners Capital - Samartha R.N', PC),
- ('Manasa', 'Loans (Liability) / Unsecured Loans', None, 170180, None, None, 'Loan - Manasa', LTB),
+ ('Manasa', 'Loans (Liability) / Unsecured Loans', None, 170180, None, None, 'Loan - Manasa', 'Short-term borrowings'),
  ('Samartha  Raghava NAgabhushanam-Loan', 'Loans (Liability) / Unsecured Loans', None, 2480680, None, 780680, 'Loan - Samartha Raghava Nagabhushanam', LTB),
  ('194 J-TDS on Profession', 'Current Liabilities / Duties & Taxes', None, 21760, None, 35000, 'TDS Payable 194J', OCL),
  ('GST Payable', 'Current Liabilities / Duties & Taxes', None, 7505.41, None, None, 'GST Payable', OCL),
@@ -204,6 +204,7 @@ for n in all_exp:
     rows.append((n, 'Indirect Expenses', exp_cy.get(n), None, exp_py.get(n), None, n, OE))
 rows.append(('Profit & Loss A/c (opening balance - accumulated loss brought forward)', 'Profit & Loss A/c', 1120911.52, None, None, None, 'Opening P&L', RS))
 
+LEDGER_CLOSING = {k: float(v) for k, v in {"194 J-TDS on Profession": "-21760", "Accomodation and Hotel Expenses": "17510", "Advertisement Campaining Cost IGST": "410685.35", "Ajay Pandey": "-30800", "B2C Sales": "-1059363.54", "Bank Charges": "880.63", "Bhadri Narayan": "-8606.5", "Bharti Airtel Limited": "-6339.78", "B Omkarmurthy": "0", "Branding Expenses": "19100", "Cash": "20754.2", "Conveyance": "25373", "Data Infrastructure (GST)": "26223.64", "Design and Development": "70000", "Dhakshayani": "-3000", "Dhanush": "-8815", "Dharani": "0", "Face  Book India Online Services  Private Limited": "-163951.21", "Futura Digital": "0", "Google India Private Limited": "-3657.53", "GST 9 % on Sales": "0", "GST Late File  Fees": "20", "GST Payable": "-7505.41", "GST Sales 9% CGST": "0", "Halaswamy": "0", "IGST Inout 18%": "0", "Input 9 % SGST": "2820.94", "Input  CGST 9%": "2820.94", "Interest on TDS": "2164", "Internship Charges": "12000", "ISBR": "0", "J R Computers Inc": "-9263", "Karnataka Digital Studio": "-5400", "Kotak Mahindra Bank": "-2593.05", "K Soorya": "-33930", "Local Travel and Conveyance": "177417", "Madhavi K": "-90000", "Manasa": "-170180", "Mangala": "15000", "Manjunath N": "-5000", "Medha Sudarshan": "0", "Mobile  and Telepohone Exenses": "9871.95", "Nayana Nagabhushanam(Drishti Commn)": "0", "Office Expenses": "80518", "Payment Gate Way Comm. GST Exmt": "2535.68", "Payment Gate Way Commission": "24901.09", "Pixel Digital and Design Studios": "-2000.9", "Pooja Expenses": "959127.5", "Postage and Courier Expenses": "24538", "Preincorporation Expenses": "36000", "Printing Charges": "43036", "Printo Document  Services  Private Limited": "0", "Professional Charges": "1008252", "Profit & Loss A/c": "1120911.52", "Rakshith Adiga": "0", "Razorpay Software Pvt. Ltd.": "-30452.56", "Rishabh Marketing": "0", "Round Off": "0.04", "Samartha  Raghava NAgabhushanam-Loan": "-2480680", "Samartha  R .N -Captial Account": "-90000", "Sathyanarayana Bhat": "-64590", "Sireesha": "-520", "Sragdhara Bhatt": "-2484", "Sreejit Nambiyar": "0", "Sriguru P V": "20000", "Staff Welfare": "7681", "Studio Expenses (GST 0%)": "24000", "Subodh Kumar Mishra": "121000", "Subscrptions Expenses": "15000", "Sudhakar": "0", "Swami Gangaram": "2500", "Translation Expenses": "52760", "Umesh": "-21500", "Usha Devi": "-22500", "Venkatesh": "-16528", "Vinyas Kumar": "-18982", "Web Site Development Expenses": "10000", "Yuvaraj": "15000"}.items()}
 r = 7
 for led, grp, cdr, ccr, pdr, pcr, key, head in rows:
     put(tb, f'A{r}', led, size=10); put(tb, f'B{r}', grp, size=10)
@@ -212,9 +213,14 @@ for led, grp, cdr, ccr, pdr, pcr, key, head in rows:
     put(tb, f'G{r}', f'=(C{r}+D{r})/Master!$B$31', size=10, nf=NF_TB2)
     put(tb, f'H{r}', f'=(E{r}+F{r})/Master!$B$31', size=10, nf=NF_TB2)
     put(tb, f'I{r}', key, size=10); put(tb, f'J{r}', head, size=10)
+    lname = 'Kotak Mahindra Bank' if led.startswith('Kotak') else ('Profit & Loss A/c' if led.startswith('Profit & Loss') else led)
+    if (cdr or ccr) and lname in LEDGER_CLOSING:
+        put(tb, f'K{r}', LEDGER_CLOSING[lname], size=10, nf=NF_TB2)
+        put(tb, f'L{r}', f'=(C{r}-D{r})-K{r}', size=10, nf=NF_TB2)
     r += 1
 last_tb = r - 1
-box(tb, f'A7:J{last_tb}')
+box(tb, f'A7:L{last_tb}')
+put(tb, f'L{last_tb+3}', f'=SUM(L7:L{last_tb})', size=10, nf=NF_TB2, bold=True); put(tb, f'K{last_tb+3}', 'Total TB less Ledger ->', size=10, bold=True, h='right')
 for col in 'CDEF':
     put(tb, f'{col}4', f'=SUM({col}7:{col}{last_tb+1})', size=10, nf=NF_TB2, bold=True)
 put(tb, 'G4', f'=SUM(G7:G{last_tb+1})', size=10, nf=NF_TB, bold=True); put(tb, 'H4', f'=SUM(H7:H{last_tb+1})', size=10, nf=NF_TB, bold=True)
@@ -232,7 +238,7 @@ put(tb, f'A{r}', 'Difference: Debit less Credit (must be nil)', bold=True, size=
 put(tb, f'C{r}', '=C4-D4', size=10, nf=NF_TB2, bold=True); put(tb, f'E{r}', '=E4-F4', size=10, nf=NF_TB2, bold=True)
 TB_CHECK_ROWS = (r-1, r)
 tb.freeze_panes = 'A7'
-setup_print(tb, f'TB!$A$1:$J${r}', landscape=True)
+setup_print(tb, f'TB!$A$1:$L${r}', landscape=True)
 
 # helpers for notes formulas
 def cy(key_ref):  return f'=SUMIFS(TB!$G:$G,TB!$I:$I,{key_ref})'
@@ -304,39 +310,39 @@ def line(ws, r, text, note=None, cyf=None, pyf=None, bold=False, indent=0, amt_b
 line(bs, 7, 'LIABILITIES', bold=True); row_border(bs, 7, COLS, top=MED)
 line(bs, 8, "Partners' funds", bold=True)
 line(bs, 9, "(a) Partners' capital", '2.1', "='2.1'!D13", "='2.1'!E13", indent=1)
-line(bs, 10, '(b) Reserves and surplus', '2.2', "='2.2 - 2.10'!D15", "='2.2 - 2.10'!E15", indent=1)
+line(bs, 10, '(b) Reserves and surplus', '2.2', "='2.2 - 2.11'!D15", "='2.2 - 2.11'!E15", indent=1)
 line(bs, 11, "Total Partners' funds", None, '=SUM(D9:D10)', '=SUM(E9:E10)', indent=2, amt_bold=True, top=THIN, bottom=THIN)
 line(bs, 12, 'Non-current liabilities', bold=True)
-line(bs, 13, '(a) Long-term borrowings', '2.3', "='2.2 - 2.10'!D22", "='2.2 - 2.10'!E22", indent=1, bottom=THIN)
+line(bs, 13, '(a) Long-term borrowings', '2.3', "='2.2 - 2.11'!D21", "='2.2 - 2.11'!E21", indent=1, bottom=THIN)
 line(bs, 14, 'Total Non-current liabilities', None, '=SUM(D13:D13)', '=SUM(E13:E13)', indent=2, amt_bold=True, top=THIN, bottom=THIN)
 line(bs, 15, 'Current Liabilities', bold=True)
-line(bs, 16, '(a) Trade payables', '2.4', "='2.2 - 2.10'!D30", "='2.2 - 2.10'!E30", indent=1)
-line(bs, 17, '(b) Other current liabilities', '2.5', "='2.2 - 2.10'!D39", "='2.2 - 2.10'!E39", indent=1, bottom=THIN)
-line(bs, 18, 'Total Current Liabilities', None, '=SUM(D16:D17)', '=SUM(E16:E17)', indent=2, amt_bold=True, top=THIN, bottom=MED)
-line(bs, 19, 'TOTAL LIABILITIES', None, '=D11+D14+D18', '=E11+E14+E18', bold=True)
-row_border(bs, 19, COLS, top=MED, bottom=MED)
-for col in ('D','E'): bs[f'{col}19'].alignment = Alignment(vertical='center')
-bs.row_dimensions[20].height = 5.1
-line(bs, 21, 'ASSETS', bold=True)
-line(bs, 22, 'Non-current assets', bold=True)
-line(bs, 23, '(a) Property, Plant & Equipment & Intangible assets', indent=1)
-line(bs, 24, '(i) Property, Plant & Equipment', None, 0, 0, indent=2)
-line(bs, 25, '="Total "&A22', None, '=SUM(D24:D24)', '=SUM(E24:E24)', indent=2, amt_bold=True, top=THIN, bottom=THIN)
-line(bs, 26, 'Current assets', bold=True)
-line(bs, 27, '(a) Cash and cash equivalents', '2.6', "='2.2 - 2.10'!D45", "='2.2 - 2.10'!E45", indent=1)
-line(bs, 28, '(b) Short-term loans and advances', '2.7', "='2.2 - 2.10'!D55", "='2.2 - 2.10'!E55", indent=1)
-line(bs, 29, '(c) Other current assets', '2.8', "='2.2 - 2.10'!D62", "='2.2 - 2.10'!E62", indent=1)
-line(bs, 30, '="Total "&A26', None, '=SUM(D27:D29)', '=SUM(E27:E29)', indent=2, amt_bold=True, top=THIN, bottom=MED)
-line(bs, 31, '=UPPER("Total "&A21)', None, '=D25+D30', '=E25+E30', bold=True)
-row_border(bs, 31, COLS, top=MED, bottom=MED)
-bs.row_dimensions[32].height = 5.1
-put(bs, 'A33', 'SIGNIFICANT ACCOUNTING POLICIES,\nNOTES FORMING PART OF THE FINANCIAL STATEMENTS', wrap=True, nf='@')
-put(bs, 'C33', '1 & 2', h='center'); bs.row_dimensions[33].height = 30
-sign_end = sign_block(bs, 35)
-# off-print check cells
+line(bs, 16, '(a) Short-term borrowings', '2.4', "='2.2 - 2.11'!D26", "='2.2 - 2.11'!E26", indent=1)
+line(bs, 17, '(b) Trade payables', '2.5', "='2.2 - 2.11'!D34", "='2.2 - 2.11'!E34", indent=1)
+line(bs, 18, '(c) Other current liabilities', '2.6', "='2.2 - 2.11'!D43", "='2.2 - 2.11'!E43", indent=1, bottom=THIN)
+line(bs, 19, 'Total Current Liabilities', None, '=SUM(D16:D18)', '=SUM(E16:E18)', indent=2, amt_bold=True, top=THIN, bottom=MED)
+line(bs, 20, 'TOTAL LIABILITIES', None, '=D11+D14+D19', '=E11+E14+E19', bold=True)
+row_border(bs, 20, COLS, top=MED, bottom=MED)
+for col in ('D','E'): bs[f'{col}20'].alignment = Alignment(vertical='center')
+bs.row_dimensions[21].height = 5.1
+line(bs, 22, 'ASSETS', bold=True)
+line(bs, 23, 'Non-current assets', bold=True)
+line(bs, 24, '(a) Property, Plant & Equipment & Intangible assets', indent=1)
+line(bs, 25, '(i) Property, Plant & Equipment', None, 0, 0, indent=2)
+line(bs, 26, '="Total "&A23', None, '=SUM(D25:D25)', '=SUM(E25:E25)', indent=2, amt_bold=True, top=THIN, bottom=THIN)
+line(bs, 27, 'Current assets', bold=True)
+line(bs, 28, '(a) Cash and cash equivalents', '2.7', "='2.2 - 2.11'!D49", "='2.2 - 2.11'!E49", indent=1)
+line(bs, 29, '(b) Short-term loans and advances', '2.8', "='2.2 - 2.11'!D59", "='2.2 - 2.11'!E59", indent=1)
+line(bs, 30, '(c) Other current assets', '2.9', "='2.2 - 2.11'!D66", "='2.2 - 2.11'!E66", indent=1)
+line(bs, 31, '="Total "&A27', None, '=SUM(D28:D30)', '=SUM(E28:E30)', indent=2, amt_bold=True, top=THIN, bottom=MED)
+line(bs, 32, '=UPPER("Total "&A22)', None, '=D26+D31', '=E26+E31', bold=True)
+row_border(bs, 32, COLS, top=MED, bottom=MED)
+bs.row_dimensions[33].height = 5.1
+put(bs, 'A34', 'SIGNIFICANT ACCOUNTING POLICIES,\nNOTES FORMING PART OF THE FINANCIAL STATEMENTS', wrap=True, nf='@')
+put(bs, 'C34', '1 & 2', h='center'); bs.row_dimensions[34].height = 30
+sign_end = sign_block(bs, 36)
 put(bs, 'G6', 'Check (outside print area)', bold=True, size=9, color='FF808080')
-put(bs, 'G7', '="Total Liabilities less Total Assets (CY): "&TEXT(D19-D31,"#,##0.00")', size=9, color='FF808080')
-put(bs, 'G8', '="Total Liabilities less Total Assets (PY): "&TEXT(E19-E31,"#,##0.00")', size=9, color='FF808080')
+put(bs, 'G7', '="Total Liabilities less Total Assets (CY): "&TEXT(D20-D32,"#,##0.00")', size=9, color='FF808080')
+put(bs, 'G8', '="Total Liabilities less Total Assets (PY): "&TEXT(E20-E32,"#,##0.00")', size=9, color='FF808080')
 setup_print(bs, f'BS!$A$1:$E${sign_end}')
 
 # =====================================================================================
@@ -347,12 +353,12 @@ widths(pl, {'A': 61.5, 'B': 32.0, 'C': 6.4, 'D': 20.0, 'E': 20.0})
 header_block(pl, '="PROFIT AND LOSS STATEMENT FOR THE PERIOD "&Master!B5')
 col_headers(pl, 6); pl.row_dimensions[6].height = 17.45
 line(pl, 7, 'REVENUE', bold=True); row_border(pl, 7, ('D','E'), top=MED)
-line(pl, 8, '(a) Revenue from operations', '2.9', "='2.2 - 2.10'!D68", "='2.2 - 2.10'!E68", indent=1)
+line(pl, 8, '(a) Revenue from operations', '2.10', "='2.2 - 2.11'!D72", "='2.2 - 2.11'!E72", indent=1)
 line(pl, 9, '(b) Other income', None, 0, 0, indent=1, bottom=THIN)
 line(pl, 10, 'Total Income', None, '=SUM(D8:D9)', '=SUM(E8:E9)', bold=True, indent=2, top=THIN, bottom=THIN)
 pl.row_dimensions[11].height = 17.1
 line(pl, 12, 'EXPENSES', bold=True)
-line(pl, 13, '(A) Other expenses', '2.10', "='2.2 - 2.10'!D105", "='2.2 - 2.10'!E105", indent=1, bottom=THIN)
+line(pl, 13, '(A) Other expenses', '2.11', "='2.2 - 2.11'!D109", "='2.2 - 2.11'!E109", indent=1, bottom=THIN)
 line(pl, 14, 'Total Expenses', None, '=SUM(D13:D13)', '=SUM(E13:E13)', bold=True, indent=2, top=THIN, bottom=THIN)
 pl.row_dimensions[15].height = 17.1
 line(pl, 16, 'Profit/(Loss) before exceptional & extraordinary items and tax', None, '=D10-D14', '=E10-E14', bold=True, top=THIN, bottom=THIN)
@@ -435,7 +441,7 @@ setup_print(n1, "'2.1'!$A$1:$E$30")
 # =====================================================================================
 # 2.2 - 2.10
 # =====================================================================================
-n2 = wb.create_sheet('2.2 - 2.10')
+n2 = wb.create_sheet('2.2 - 2.11')
 widths(n2, {'A': 40.0, 'B': 11.9, 'C': 70.6, 'D': 17.4, 'E': 17.4})
 header_block(n2, '="2. NOTES FORMING PART OF THE FINANCIAL STATEMENTS FOR THE YEAR ENDED "&Master!B33', first_col='B', caption_col='E', note_title=True)
 put(n2, 'A1', 'Grouping keys (column A is outside the print area)', size=9, color='FF808080')
@@ -476,106 +482,105 @@ put(n2, 'D16', '=D15', bold=True, nf=NF_AMT, top=THIN, bottom=THIN); put(n2, 'E1
 for col in ('B','C'): put(n2, f'{col}16', None, bottom=THIN)
 n2.row_dimensions[17].height = 5.1
 
-# 2.3 Long-term borrowings (rows 18-22)
+# 2.3 Long-term borrowings (rows 18-21)
 note_title(n2, 18, '2.3', 'Long-term borrowings')
 put(n2, 'C19', 'Unsecured loans', bold=True, top=THIN)
 for col in ('B','D','E'): put(n2, f'{col}19', None, top=THIN)
 n_item(n2, 20, '="From partner - "&Master!B22', key='Loan - Samartha Raghava Nagabhushanam')
-n_item(n2, 21, 'From others - Manasa', key='Loan - Manasa')
-n_total(n2, 22, 'Total', 20, 21)
-n2.row_dimensions[23].height = 5.1
-
-# 2.4 Trade payables (rows 24-30)
-note_title(n2, 24, '2.4', 'Trade payables')
-n2.row_dimensions[25].height = 5.1
-put(n2, 'C26', 'Outstanding dues of;', top=THIN)
-for col in ('B','D','E'): put(n2, f'{col}26', None, top=THIN)
-n_item(n2, 27, '(a) micro enterprises and small enterprises', key='Trade Payables - MSME', indent=0)
-n_item(n2, 28, '(b) other than micro enterprises and small enterprises', key='Trade Payables - Others', indent=0)
+n_total(n2, 21, 'Total', 20, 20)
+n2.row_dimensions[22].height = 5.1
+# 2.4 Short-term borrowings (rows 23-26)
+note_title(n2, 23, '2.4', 'Short-term borrowings')
+put(n2, 'C24', 'Unsecured loans, repayable on demand', bold=True, top=THIN)
+for col in ('B','D','E'): put(n2, f'{col}24', None, top=THIN)
+n_item(n2, 25, 'From others - Manasa (amounts advanced and expenses incurred on behalf of the LLP)', key='Loan - Manasa')
+n_total(n2, 26, 'Total', 25, 25)
+n2.row_dimensions[27].height = 5.1
+# 2.5 Trade payables (rows 28-34)
+note_title(n2, 28, '2.5', 'Trade payables')
 n2.row_dimensions[29].height = 5.1
-n_total(n2, 30, 'Total', 27, 28)
-n2.row_dimensions[31].height = 5.1
-
-# 2.5 Other current liabilities (rows 32-39)
-note_title(n2, 32, '2.5', 'Other current liabilities')
-put(n2, 'C33', 'Statutory dues', bold=True, top=THIN)
-for col in ('B','D','E'): put(n2, f'{col}33', None, top=THIN)
-n_item(n2, 34, 'TDS payable (Section 194J)', key='TDS Payable 194J')
-n_item(n2, 35, 'GST payable', key='GST Payable')
-put(n2, 'C36', 'Others', bold=True)
-n_item(n2, 37, 'Book overdraft - Kotak Mahindra Bank (credit balance as per books)', key='Book overdraft - Kotak Mahindra Bank')
-n2.row_dimensions[38].height = 5.1
-n_total(n2, 39, 'Total', 34, 37)
-n2.row_dimensions[40].height = 5.1
-
-# 2.6 Cash and cash equivalents (rows 41-45)
-note_title(n2, 41, '2.6', 'Cash and cash equivalents')
-put(n2, 'B42', None, top=THIN); put(n2, 'C42', None, top=THIN); put(n2, 'D42', None, top=THIN); put(n2, 'E42', None, top=THIN)
+put(n2, 'C30', 'Outstanding dues of;', top=THIN)
+for col in ('B','D','E'): put(n2, f'{col}30', None, top=THIN)
+n_item(n2, 31, '(a) micro enterprises and small enterprises', key='Trade Payables - MSME', indent=0)
+n_item(n2, 32, '(b) other than micro enterprises and small enterprises', key='Trade Payables - Others', indent=0)
+n2.row_dimensions[33].height = 5.1
+n_total(n2, 34, 'Total', 31, 32)
+n2.row_dimensions[35].height = 5.1
+# 2.6 Other current liabilities (rows 36-43)
+note_title(n2, 36, '2.6', 'Other current liabilities')
+put(n2, 'C37', 'Statutory dues', bold=True, top=THIN)
+for col in ('B','D','E'): put(n2, f'{col}37', None, top=THIN)
+n_item(n2, 38, 'TDS payable (Section 194J)', key='TDS Payable 194J')
+n_item(n2, 39, 'GST payable', key='GST Payable')
+put(n2, 'C40', 'Others', bold=True)
+n_item(n2, 41, 'Book overdraft - Kotak Mahindra Bank (credit balance as per books)', key='Book overdraft - Kotak Mahindra Bank')
 n2.row_dimensions[42].height = 5.1
-n_item(n2, 43, 'Cash in hand', key='Cash in hand')
-n_item(n2, 44, 'Balances with banks - Kotak Mahindra Bank (current account)', key='Bank - Kotak Mahindra Bank')
-n_total(n2, 45, 'Total', 43, 44)
+n_total(n2, 43, 'Total', 38, 41)
+n2.row_dimensions[44].height = 5.1
+# 2.7 Cash and cash equivalents (rows 45-49)
+note_title(n2, 45, '2.7', 'Cash and cash equivalents')
+for col in ('B','C','D','E'): put(n2, f'{col}46', None, top=THIN)
 n2.row_dimensions[46].height = 5.1
-
-# 2.7 Short-term loans and advances (rows 47-55)
-note_title(n2, 47, '2.7', 'Short-term loans and advances')
-put(n2, 'C48', 'Advances to suppliers / consultants (debit balances in Sundry Creditors)', bold=True, top=THIN)
-for col in ('B','D','E'): put(n2, f'{col}48', None, top=THIN)
+n_item(n2, 47, 'Cash in hand', key='Cash in hand')
+n_item(n2, 48, 'Balances with banks - Kotak Mahindra Bank (current account)', key='Bank - Kotak Mahindra Bank')
+n_total(n2, 49, 'Total', 47, 48)
+n2.row_dimensions[50].height = 5.1
+# 2.8 Short-term loans and advances (rows 51-59)
+note_title(n2, 51, '2.8', 'Short-term loans and advances')
+put(n2, 'C52', 'Advances to suppliers / consultants (debit balances in Sundry Creditors)', bold=True, top=THIN)
+for col in ('B','D','E'): put(n2, f'{col}52', None, top=THIN)
 adv = ['Mangala', 'Sriguru P V', 'Subodh Kumar Mishra', 'Swami Gangaram', 'Yuvaraj']
-for i, nm in enumerate(adv):
-    n_item(n2, 49 + i, nm, key=f'Advance - {nm}')
-n2.row_dimensions[54].height = 5.1
-n_total(n2, 55, 'Total', 49, 53)
-n2.row_dimensions[56].height = 5.1
-
-# 2.8 Other current assets (rows 57-62)
-note_title(n2, 57, '2.8', 'Other current assets')
-put(n2, 'C58', 'Balances with government authorities', bold=True, top=THIN)
-for col in ('B','D','E'): put(n2, f'{col}58', None, top=THIN)
-n_item(n2, 59, 'Input CGST 9%', key='Input CGST')
-n_item(n2, 60, 'Input SGST 9%', key='Input SGST')
-n2.row_dimensions[61].height = 5.1
-n_total(n2, 62, 'Total', 59, 60)
-n2.row_dimensions[63].height = 5.1
-
-# 2.9 Revenue from operations (rows 64-68)
-note_title(n2, 64, '2.9', 'Revenue from operations')
-put(n2, 'B65', None, top=THIN); put(n2, 'C65', None, top=THIN); put(n2, 'D65', None, top=THIN); put(n2, 'E65', None, top=THIN)
+for i_, nm in enumerate(adv):
+    n_item(n2, 53 + i_, nm, key=f'Advance - {nm}')
+n2.row_dimensions[58].height = 5.1
+n_total(n2, 59, 'Total', 53, 57)
+n2.row_dimensions[60].height = 5.1
+# 2.9 Other current assets (rows 61-66)
+note_title(n2, 61, '2.9', 'Other current assets')
+put(n2, 'C62', 'Balances with government authorities', bold=True, top=THIN)
+for col in ('B','D','E'): put(n2, f'{col}62', None, top=THIN)
+n_item(n2, 63, 'Input CGST 9%', key='Input CGST')
+n_item(n2, 64, 'Input SGST 9%', key='Input SGST')
 n2.row_dimensions[65].height = 5.1
-n_item(n2, 66, 'B2C Sales', key='B2C Sales')
+n_total(n2, 66, 'Total', 63, 64)
 n2.row_dimensions[67].height = 5.1
-n_total(n2, 68, 'Total', 66, 66)
+# 2.10 Revenue from operations (rows 68-72)
+note_title(n2, 68, '2.10', 'Revenue from operations')
+for col in ('B','C','D','E'): put(n2, f'{col}69', None, top=THIN)
 n2.row_dimensions[69].height = 5.1
-
-# 2.10 Other expenses (rows 70-105)
-note_title(n2, 70, '2.10', 'Other expenses')
-put(n2, 'B71', None, top=THIN); put(n2, 'C71', None, top=THIN); put(n2, 'D71', None, top=THIN); put(n2, 'E71', None, top=THIN)
+n_item(n2, 70, 'B2C Sales (online, collected through payment gateway)', key='B2C Sales')
 n2.row_dimensions[71].height = 5.1
-r = 72
+n_total(n2, 72, 'Total', 70, 70)
+n2.row_dimensions[73].height = 5.1
+# 2.11 Other expenses (rows 74-109)
+note_title(n2, 74, '2.11', 'Other expenses')
+for col in ('B','C','D','E'): put(n2, f'{col}75', None, top=THIN)
+n2.row_dimensions[75].height = 5.1
+r = 76
 for nm in all_exp:
     n_item(n2, r, pretty.get(nm, nm), key=nm)
     r += 1
-exp_last = r - 1  # 72 + 28 - 1 = 99
-r_total = 105
+exp_last = r - 1
+r_total = 109
 for rr in range(exp_last + 1, r_total):
     n2.row_dimensions[rr].height = 5.1
-n_total(n2, r_total, 'Total', 72, exp_last, bottom=THIN)
+n_total(n2, r_total, 'Total', 76, exp_last, bottom=THIN)
 n2.row_dimensions[r_total + 1].height = 5.1
 assert exp_last < r_total, exp_last
-setup_print(n2, f"'2.2 - 2.10'!$B$1:$E${r_total}")
+setup_print(n2, f"'2.2 - 2.11'!$B$1:$E${r_total}")
 from openpyxl.worksheet.pagebreak import Break
-n2.row_breaks.append(Break(id=69))
+n2.row_breaks.append(Break(id=73))
 n2.print_title_rows = '1:6'
 
 # =====================================================================================
 # 2.11 - 2.12
 # =====================================================================================
-n3 = wb.create_sheet('2.11-2.12')
+n3 = wb.create_sheet('2.12-2.13')
 widths(n3, {'A': 9.4, 'B': 46.0, 'C': 40.0, 'D': 26.0, 'E': 20.0})
-put(n3, 'A1', "='2.2 - 2.10'!B1", bold=True); put(n3, 'A2', "='2.2 - 2.10'!B2", bold=True)
+put(n3, 'A1', "='2.2 - 2.11'!B1", bold=True); put(n3, 'A2', "='2.2 - 2.11'!B2", bold=True)
 put(n3, 'A3', '=Master!B3', bold=True, v='top'); n3.row_dimensions[3].height = 35.25
-put(n3, 'A4', "='2.2 - 2.10'!B4", bold=True)
-put(n3, 'A6', '2.11  Related Party Disclosures', bold=True, h='left', v='top', top=THIN, bottom=THIN, left=THIN, right=THIN)
+put(n3, 'A4', "='2.2 - 2.11'!B4", bold=True)
+put(n3, 'A6', '2.12  Related Party Disclosures', bold=True, h='left', v='top', top=THIN, bottom=THIN, left=THIN, right=THIN)
 put(n3, 'B6', None, top=THIN, bottom=THIN, right=THIN)
 n3.merge_cells('A6:B6')
 n3.row_dimensions[7].height = 5.1
@@ -605,25 +610,28 @@ put(n3, 'A18', 1, size=10, h='center'); put(n3, 'B18', "Partners' capital contri
 put(n3, 'B19', '=B11', size=10); put(n3, 'D19', "='2.1'!D11", size=10, nf=NF_TB, h='center', v='center'); put(n3, 'E19', "='2.1'!E11", size=10, nf=NF_TB, h='center', v='center')
 n3.row_dimensions[20].height = 5.1
 put(n3, 'A21', 2, size=10, h='center'); put(n3, 'B21', 'Unsecured loan from partner (closing balance)', bold=True, size=10)
-put(n3, 'B22', '=B11', size=10); put(n3, 'D22', "='2.2 - 2.10'!D20", size=10, nf=NF_TB, h='center', v='center'); put(n3, 'E22', "='2.2 - 2.10'!E20", size=10, nf=NF_TB, h='center', v='center')
+put(n3, 'B22', '=B11', size=10); put(n3, 'D22', "='2.2 - 2.11'!D20", size=10, nf=NF_TB, h='center', v='center'); put(n3, 'E22', "='2.2 - 2.11'!E20", size=10, nf=NF_TB, h='center', v='center')
 n3.row_dimensions[23].height = 5.1
-put(n3, 'A24', 3, size=10, h='center'); put(n3, 'B24', 'Unsecured loan from partner - net amount received during the year', bold=True, size=10, wrap=True)
-put(n3, 'B25', '=B11', size=10, bottom=THIN); put(n3, 'A25', None, bottom=THIN); put(n3, 'C25', None, bottom=THIN)
-put(n3, 'D25', '=D22-E22', size=10, nf=NF_TB, h='center', v='center', bottom=THIN); put(n3, 'E25', '=E22-0', size=10, nf=NF_TB, h='center', v='center', bottom=THIN)
-n3.row_dimensions[26].height = 5.1
-n3.merge_cells('A27:E27')
-put(n3, 'A27', 'No interest on the loan from the partner and no remuneration to partners has been charged in the books for the year (previous year: Nil). '
-    'The previous-year figure of net loan received is stated on the basis that no opening balances appear in the Trial Balance for 2024-25.', wrap=True, v='top', h='justify', size=10)
-n3.row_dimensions[27].height = 42
+put(n3, 'A24', 3, size=10, h='center'); put(n3, 'B24', 'Unsecured loan received from partner during the year', bold=True, size=10, wrap=True)
+put(n3, 'B25', '=B11', size=10)
+put(n3, 'D25', '=1700000/Master!$B$31', size=10, nf=NF_TB, h='center', v='center'); put(n3, 'E25', '=E22', size=10, nf=NF_TB, h='center', v='center')
+put(n3, 'A26', 4, size=10, h='center'); put(n3, 'B26', 'Unsecured loan repaid to partner during the year', bold=True, size=10, wrap=True)
+put(n3, 'B27', '=B11', size=10, bottom=THIN); put(n3, 'A27', None, bottom=THIN); put(n3, 'C27', None, bottom=THIN)
+put(n3, 'D27', 0, size=10, nf=NF_TB, h='center', v='center', bottom=THIN); put(n3, 'E27', 0, size=10, nf=NF_TB, h='center', v='center', bottom=THIN)
 n3.row_dimensions[28].height = 5.1
-put(n3, 'A29', '2.12 - Previous period figures', bold=True, top=THIN, bottom=THIN, left=THIN, right=THIN)
-put(n3, 'B29', None, top=THIN, bottom=THIN, right=THIN)
-n3.merge_cells('A29:B29')
-n3.merge_cells('A30:E30')
-put(n3, 'A30', "Previous year's figures have been regrouped / reclassified wherever necessary to conform to the current year's presentation.", wrap=True, h='justify', v='top')
-n3.row_dimensions[30].height = 33
-sign_end_n3 = sign_block(n3, 32, cols=('A', 'C', 'D'), indent_b=0, wrap_a=False)
-setup_print(n3, f"'2.11-2.12'!$A$1:$E${sign_end_n3}")
+n3.merge_cells('A29:E29')
+put(n3, 'A29', 'The loan from the partner was received in nine tranches through the bank account during the year and no amount was repaid (per ledger). No interest on the loan and no remuneration to partners has been charged in the books for the year (previous year: Nil). '
+    'The previous-year figure of loan received is stated on the basis that no opening balances appear in the Trial Balance for 2024-25.', wrap=True, v='top', h='justify', size=10)
+n3.row_dimensions[29].height = 42
+n3.row_dimensions[30].height = 5.1
+put(n3, 'A31', '2.13 - Previous period figures', bold=True, top=THIN, bottom=THIN, left=THIN, right=THIN)
+put(n3, 'B31', None, top=THIN, bottom=THIN, right=THIN)
+n3.merge_cells('A31:B31')
+n3.merge_cells('A32:E32')
+put(n3, 'A32', "Previous year's figures have been regrouped / reclassified wherever necessary to conform to the current year's presentation.", wrap=True, h='justify', v='top')
+n3.row_dimensions[32].height = 33
+sign_end_n3 = sign_block(n3, 34, cols=('A', 'C', 'D'), indent_b=0, wrap_a=False)
+setup_print(n3, f"'2.12-2.13'!$A$1:$E${sign_end_n3}")
 
 # =====================================================================================
 # FLAGS
@@ -636,45 +644,50 @@ put(fl, 'B2', '=Master!B2&" - FY "&Master!B5', bold=True)
 for i, h in enumerate(['#', 'Area', 'Observation (as per Trial Balance)', 'Information required / treatment adopted']):
     put(fl, f'{get_column_letter(i+1)}4', h, bold=True, color='FFFFFFFF', fill=BLUEHDR, h='center', v='center', wrap=True, top=THIN, bottom=THIN, left=THIN, right=THIN)
 flags = [
- ('Period', 'The FY 2025-26 Trial Balance exported from Tally covers 1-Apr-25 to 23-Mar-26, not the full year to 31-Mar-26.',
-  'Statements are presented as at March 31, 2026 (FY 2025-26) as instructed. Transactions from 24-Mar-26 to 31-Mar-26 (if any) are not included. A TB to 31-Mar-26 should be re-exported and pasted into the TB sheet.'),
- ('Entity / partners', 'Only one partner capital account appears in the TB (Samartha R .N - Captial Account, Rs 90,000). An LLP must have at least two partners.',
+ ('Period / cut-off', 'The FY 2025-26 Trial Balance and ledgers run from 1-Apr-25 to 23-Mar-26. Sales are booked by one summary Sales voucher per month and the last one is dated 28-Feb-26; the last Razorpay settlement received in the bank is dated 27-Feb-26; there are no sales in April 2025.',
+  'Statements are presented as at March 31, 2026 (FY 2025-26) as instructed, on the books as they stand. Revenue and Razorpay settlements for March 2026 (and 24 to 31 March bank transactions) are not yet recorded. Book the March sales voucher and settlements, re-export the TB to 31-Mar-26 and paste it into the TB sheet.'),
+ ('Bank - credit balance', 'Per the Kotak ledger (446 entries) the book balance stays positive all year and turns to a credit of Rs 2,593.05 only on the last entry (15-Mar-26, payment of Rs 5,000 to Yuvaraj). March Razorpay settlements are unrecorded (see item 1).',
+  'Presented as "Book overdraft" under Other current liabilities (Note 2.6) since a credit bank balance cannot be shown as cash. It is a book overdraft from unrecorded receipts, not a bank overdraft, and should reverse once March receipts are booked. Confirm against the bank statement.'),
+ ('"Cash" ledger is not physical cash', 'All 22 entries in the Cash ledger are monthly Sales (Dr) and monthly transfers to the Razorpay ledger (Cr). The closing Rs 20,754.20 is the cumulative difference between sales booked (Rs 12,50,048.98 incl. GST) and amounts transferred to Razorpay (Rs 12,29,294.78). Separately the Razorpay ledger has a CREDIT balance of Rs 30,452.56 (settlements + commission exceed collections booked) which sits inside Sundry Creditors.',
+  'Both balances are presented exactly as per the TB (Cash in hand, Note 2.7; Razorpay within Trade payables, Note 2.5) because they are unreconciled. Reconcile with the Razorpay settlement statement; the net position (Rs 9,698.36 payable) should then be reclassified as a receivable/payable from the payment gateway, not cash.'),
+ ('Manasa - reclassified to Short-term borrowings', 'Tally groups Manasa under Unsecured Loans. The ledger shows a running account: Rs 80,000 received (12-Feb-26), Rs 1,52,180 of LLP expenses paid personally by Manasa (Facebook ads 60,000; travel 63,218; pooja 10,000; Vinyas Kumar 9,000; Halaswamy 5,600; Bhadri Narayan 3,500; conveyance 862) and Rs 62,000 repaid in six tranches within the year. Closing Rs 1,70,180.',
+  'Because the balance is settled on demand within the year, it is presented under Short-term borrowings (Note 2.4) rather than Long-term borrowings. This is the only classification that differs from the Tally group; revert by changing the Head in the TB sheet if not agreed. Confirm Manasa\'s relationship to the partners (pays LLP expenses from personal funds; possibly a related party).'),
+ ('Partner loan - resolved from ledger', 'Loan from Samartha Raghava Nagabhushanam: opening Rs 7,80,680; received Rs 17,00,000 in nine bank tranches (6-Apr-25 to 19-Feb-26); nothing repaid; closing Rs 24,80,680. One tranche (16-Oct-25, Rs 1,00,000) is entered with voucher type "Payment" although the bank was debited; several Razorpay/Facebook entries also carry inverted voucher types.',
+  'Gross receipts and repayments are now disclosed in Note 2.12 (items 3 and 4). Amounts are unaffected by the voucher-type inconsistencies but the voucher types should be corrected in Tally. Tenure and interest terms are still not in the books; kept under Long-term borrowings following the reference mapping (Directors Loan -> Long-term borrowings). No interest has been charged.'),
+ ('Probable related party - Nayana Nagabhushanam (Drishti Commn)', 'Design and Development services of Rs 60,000 (3 x Rs 20,000; TDS Rs 6,000; Rs 54,000 paid) were availed from Nayana Nagabhushanam, who shares the partner\'s surname. Fully settled; nil closing balance.',
+  'Not disclosed as a related party because the relationship is not evidenced in the books. If Nayana Nagabhushanam is a relative of the partner, add "Availing of services - Rs 60,000" to Note 2.12.'),
+ ('Entity / partners', 'Only one partner capital account appears in the books (Samartha R .N - Captial Account, Rs 90,000, no movement in either year). An LLP must have at least two partners.',
   'Second designated partner name, DPIN, capital (if any) and profit-sharing ratio are required. Placeholders are in the Master sheet (yellow cells). Note 2.1(D) currently shows 100% contribution by the one partner in the TB.'),
- ('Entity details', 'LLPIN, PAN, LLP Agreement terms, incorporation date, auditor name/firm/FRN/membership no./UDIN, signing dates and places are not available in the TB.',
-  'Fill the yellow cells in the Master sheet; all headers and signature blocks are linked to them. Note: statutory audit of an LLP is mandatory only if turnover exceeds Rs 40 lakh or contribution exceeds Rs 25 lakh; neither threshold is met per the TB, so confirm whether an auditor block is required.'),
- ('Format', 'The reference (Checkaro) is a Private Limited Company under Schedule III. The entity here is an LLP.',
-  'Layout, fonts, rounding and note structure follow the reference exactly. Captions have been changed only where the entity type dictates: Share capital -> Partners\' capital; Shareholder\'s funds -> Partners\' funds; Board of Directors/Director/DIN -> Partners/Designated Partner/DPIN. Earnings per share and promoter shareholding (not applicable to an LLP) are omitted.'),
- ('Bank', 'Kotak Mahindra Bank ledger has a CREDIT balance of Rs 2,593.05 at 23-Mar-26 (Dr 12,768.48 at 31-Mar-25).',
-  'A credit bank balance cannot be shown as cash. Presented as "Book overdraft - Kotak Mahindra Bank" under Other current liabilities (Note 2.5). Confirm against bank statement / BRS whether this is an actual overdraft or unrecorded receipts / timing.'),
- ('Sundry creditors - debit balances', 'Five Sundry Creditor ledgers have DEBIT balances totalling Rs 1,73,500 (Mangala 15,000; Sriguru P V 20,000; Subodh Kumar Mishra 1,21,000; Swami Gangaram 2,500; Yuvaraj 15,000).',
-  'Presented as advances to suppliers/consultants under Short-term loans and advances (Note 2.7), not netted against payables. Confirm they are genuine advances and not unrecorded bills or payments posted to wrong ledgers.'),
- ('Unsecured loans', 'Loans (Liability): Samartha Raghava Nagabhushanam Rs 24,80,680 (PY 7,80,680) and Manasa Rs 1,70,180 (PY Nil). No repayment terms, interest or tenure in the TB.',
-  'Classified as Long-term borrowings (Note 2.3), following the reference mapping of Directors Loan -> Long-term borrowings. Confirm tenure (if repayable within 12 months they belong under Short-term borrowings), interest (none charged in TB) and the relationship of Manasa (related party?).'),
- ('Related parties', 'Partner Samartha Raghava Nagabhushanam: capital Rs 90,000; loan closing Rs 24,80,680; net loan received during FY 25-26 Rs 17,00,000 (closing less PY closing). Many creditors are individuals grouped as "Consultants".',
-  'Only the partner is disclosed as related party (Note 2.11). Gross loan receipts/repayments are not determinable from a TB (only net movement). Confirm whether any consultant/creditor (e.g. Madhavi K Rs 90,000, Sathyanarayana Bhat Rs 64,590) or lender Manasa is a relative of a partner.'),
- ('Trade payables - MSME', 'Sundry Creditors (credit balances) Rs 5,48,320.48 (PY 2,28,000). MSME status of suppliers is not in the TB.',
-  'Entire amount shown under "other than micro and small enterprises" pending MSME confirmation (Note 2.4). Schedule III ageing schedule is not prepared: due-date information is not in a TB (and Schedule III does not apply to an LLP).'),
- ('GST', 'GST Payable Rs 7,505.41 (credit) and Input CGST Rs 2,820.94 + Input SGST Rs 2,820.94 (debit) exist as separate ledgers.',
-  'Presented gross: GST payable under statutory dues (Note 2.5) and input credits under Other current assets (Note 2.8). Confirm with GSTR-3B / electronic credit ledger whether they should be set off and shown net.'),
- ('Expense classification', 'All expenses are grouped by Tally under "Indirect Expenses". Pooja Expenses Rs 9,59,127.50 and Professional Charges Rs 10,08,252 together exceed revenue of Rs 10,59,363.54. Staff Welfare Rs 7,681 / Internship Charges Rs 12,000 are employee-related; Bank Charges Rs 880.63 could be finance cost.',
-  'All expenses are presented under a single "Other expenses" note (2.10) exactly as grouped in Tally, as in the reference. Confirm whether Pooja Expenses are direct cost of services and whether employee-benefit / finance-cost lines should be shown separately.'),
- ('Pre-incorporation expenses', 'Pre-incorporation Expenses Rs 36,000 in FY 25-26 in addition to Rs 4,79,320 in FY 24-25.',
-  'Charged to P&L as per TB. Confirm the nature of the FY 25-26 amount (second year after incorporation) and whether any amount should be treated differently.'),
- ('Statutory interest / fees', 'Interest on TDS Rs 2,164 (PY 780) and GST Late Filing Fees Rs 20 are charged to P&L.',
-  'Presented as expenses per TB. These are typically disallowed for income-tax; no tax computation has been prepared (the reference tax working sheets were hidden, company-specific and broken with reference errors).'),
- ('Provisions not in TB', 'No audit fee provision, no depreciation/fixed assets, no income-tax provision, no interest on partner loan/capital, no partner remuneration appear in the TB.',
-  'Nothing has been added. Current tax is Nil (loss year). If an audit fee or any year-end provision is to be booked, it must first be passed in Tally and the TB re-exported.'),
- ('Going concern / net worth', "Partners' funds are negative: Rs (30,31,142.86) at 23-Mar-26 (PY Rs (10,30,911.52)). Loss for the year Rs 20,00,231.34 on revenue Rs 10,59,363.54.",
-  'Reported as per TB. Partners should confirm continued financial support (loans of Rs 26.5 lakh) for a going-concern statement in the accounting policies (Note 1), which is not part of the reference workbook and has not been prepared.'),
- ('Rounding', "Reference presents amounts in Rs '00 (Master!B31 = 100) with display rounding, without ROUND() in formulas (same as reference).",
-  "Because underlying values carry paise, in Rs '00 the displayed components of TOTAL LIABILITIES (-30,311 + 26,509 + 5,802 = 2,000) differ by 1 from the displayed total (1,999); the underlying figures balance exactly. Set Master!B31 to 1 to present in full rupees, which removes this display difference."),
- ('Cash', 'Cash in hand Rs 20,754.20 at 23-Mar-26 (PY Nil).', 'Reported as per TB. Confirm physical cash count / cash book at year end.'),
+ ('Entity details', 'LLPIN, PAN, LLP Agreement terms, incorporation date, auditor name/firm/FRN/membership no./UDIN, signing dates and places are not in the books.',
+  'Fill the yellow cells in the Master sheet; all headers and signature blocks are linked to them. Statutory audit of an LLP is mandatory only if turnover exceeds Rs 40 lakh or contribution exceeds Rs 25 lakh; neither threshold is met, so confirm whether an auditor block is required.'),
+ ('Format', 'The reference (Checkaro) is a Private Limited Company under Schedule III. This entity is an LLP.',
+  'Layout, fonts, rounding and note structure follow the reference. Captions changed only where the entity type dictates: Share capital -> Partners\' capital; Shareholder\'s funds -> Partners\' funds; Board of Directors/Director/DIN -> Partners/Designated Partner/DPIN. Earnings per share and promoter shareholding are omitted.'),
+ ('Advances (debit balances in Sundry Creditors) - detail from ledgers', 'Subodh Kumar Mishra: pooja bills Rs 1,26,000 vs paid Rs 2,47,000 -> Rs 1,21,000 advance. Yuvaraj: professional bill Rs 27,000 (net of TDS) vs paid Rs 42,000 -> Rs 15,000. Mangala Rs 15,000 (21-Jan-26), Sriguru P V Rs 20,000 (14-Feb-26) and Swami Gangaram Rs 2,500 (14-Jan-26) are single bank payments with no bill recorded.',
+  'Presented as advances to suppliers/consultants under Short-term loans and advances (Note 2.8), not netted against payables. If these payments were for services already rendered (pooja/professional fees), the bills should be booked, which would increase expenses by up to Rs 1,73,500 and reduce the advances.'),
+ ('Trade payables - MSME', 'Sundry Creditors (credit balances) Rs 5,48,320.48 (PY 2,28,000), mostly individual consultants and pooja performers, plus Facebook India Rs 1,63,951.21, Razorpay Rs 30,452.56, Bharti Airtel, Google. MSME status is not in the books.',
+  'Entire amount shown under "other than micro and small enterprises" pending MSME confirmation (Note 2.5). Schedule III ageing is not prepared (due dates not in the books; Schedule III does not apply to an LLP).'),
+ ('GST', 'GST Payable ledger: output GST Rs 1,90,685.44, set off against IGST input Rs 69,224.05 and CGST/SGST input Rs 14,662.98, paid Rs 99,293; closing payable Rs 7,505.41. Unutilised Input CGST Rs 2,820.94 and Input SGST Rs 2,820.94 remain as separate debit ledgers.',
+  'Presented gross: GST payable under statutory dues (Note 2.6) and input credits under Other current assets (Note 2.9). Confirm with GSTR-3B / electronic credit ledger whether they should be set off and shown net.'),
+ ('Expense classification', 'All expenses are grouped by Tally as Indirect Expenses. Pooja Expenses Rs 9,59,127.50 are payments to individual performers (Sathyanarayana Bhat 2,68,200; Ajay Pandey 1,55,000; Subodh Kumar Mishra 1,40,000; K Soorya 93,450; others). Professional Charges Rs 10,08,252 comprise ISBR 3,96,800; Madhavi K 2,56,452 (monthly retainer of Rs 45,000); Medha Sudarshan 1,00,000; Venkatesh, Sudhakar and Vinyas Kumar 75,000 each; Yuvaraj 30,000. Staff Welfare Rs 7,681 and Internship Charges Rs 12,000 (two stipends of Rs 6,000) are employee-related; Bank Charges Rs 880.63.',
+  'All expenses are presented under a single Other expenses note (2.11) exactly as grouped in Tally, as in the reference. Consider presenting Pooja Expenses as cost of services and employee-benefit / finance-cost lines separately if required.'),
+ ('Pre-incorporation expenses', 'Rs 36,000 charged on 6-Apr-25 by a single bank payment with no counterparty or narration, in addition to Rs 4,79,320 in FY 24-25.',
+  'Charged to P&L as per books. Confirm the nature of this second-year payment.'),
+ ('Statutory interest / fees', 'Interest on TDS Rs 2,164 (five payments, Jul to Oct 2025) and GST late filing fee Rs 20 are charged to P&L.',
+  'Presented as expenses per books. These are typically disallowed for income-tax; no tax computation has been prepared (the reference tax working sheets were hidden, company-specific and broken with reference errors).'),
+ ('Provisions not in the books', 'No audit fee provision, no depreciation/fixed assets, no income-tax provision, no interest on partner loan/capital, no partner remuneration appear in the books.',
+  'Nothing has been added. Current tax is Nil (loss year). If an audit fee or any year-end provision is to be booked, pass it in Tally and re-export the TB.'),
+ ('Going concern / net worth', "Partners' funds are negative: Rs (30,31,142.86) at 23-Mar-26 (PY Rs (10,30,911.52)). Loss for the year Rs 20,00,231.34 on revenue Rs 10,59,363.54. Operations are funded by the partner's loan of Rs 24.8 lakh.",
+  'Reported as per books. Partners should confirm continued financial support for a going-concern statement in the accounting policies (Note 1), which is not part of the reference workbook and has not been prepared.'),
+ ('Rounding', "Reference presents amounts in Rs '00 (Master!B31 = 100) with display rounding and no ROUND() in formulas (same as reference).",
+  "Because underlying values carry paise, in Rs '00 the displayed components of TOTAL LIABILITIES (-30,311 + 24,807 + 7,504 = 2,000) differ by 1 from the displayed total (1,999); the underlying figures balance exactly. Set Master!B31 to 1 to present in full rupees, which removes this display difference."),
  ('Ledger names', 'Several Tally ledger names contain spelling errors (e.g. "Telepohone Exenses", "Campaining", "Subscrptions", "Accomodation", "Captial").',
-  'Exact Tally names are retained in the TB sheet (column A and grouping keys). Only the presentation captions in Note 2.10 have corrected spelling; no amounts are affected.'),
- ('Previous year opening balances', 'The FY 24-25 TB has no brought-forward Profit & Loss balance and includes Pre-incorporation Expenses, indicating FY 24-25 was the first year.',
+  'Exact Tally names are retained in the TB sheet (column A and grouping keys). Only the presentation captions in Note 2.11 have corrected spelling; no amounts are affected.'),
+ ('Previous year opening balances', 'The FY 24-25 TB has no brought-forward Profit & Loss balance and includes Pre-incorporation Expenses, indicating FY 24-25 was the first year. The FY 25-26 ledgers confirm the FY 24-25 closing balances as openings (capital 90,000; loan 7,80,680; TDS 35,000; creditors 2,28,000; bank 12,768.48; P&L 11,20,911.52).',
   "PY opening capital (Note 2.1B) and PY opening reserves (Note 2.2) are therefore Nil and PY 'contributed / received during the year' equals the PY closing balance. Confirm the LLP's date of incorporation."),
+ ('Ledger tie-out (information)', 'All 78 FY 2025-26 ledgers were re-cast: opening + debits - credits = closing for every ledger, and every closing balance agrees with the Trial Balance. Seven ledgers with nil closing balance (ISBR, Nayana Nagabhushanam, Dharani, Futura Digital, Halaswamy, Rakshith Adiga, Rishabh Marketing, Sreejit Nambiyar, Printo) do not appear in the TB.',
+  'TB sheet columns K and L show the closing balance per ledger against each TB line and the difference (nil throughout). No amount in the statements differs from the books.'),
  ('Reference sheets not carried', 'Reference workbook contains hidden company income-tax working sheets (IT Depn, IT Comp, DTA, MAT, ARI) and a hidden trade-payables ageing sheet, all with reference errors and specific to a company.',
-  'Not reproduced (MAT, EPS, Schedule III ratios and ageing do not apply to an LLP; deferred tax not computed). Master and TB sheets are kept visible here so the mapping can be reviewed; hide them for printing if desired.'),
+  'Not reproduced (MAT, EPS, Schedule III ratios and ageing do not apply to an LLP; deferred tax not computed). Master and TB sheets are kept visible so the mapping can be reviewed; hide them for printing if desired.'),
 ]
 r = 5
 for i, (area, obs, req) in enumerate(flags, 1):
