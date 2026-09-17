@@ -21,7 +21,8 @@ FONT = "Century Gothic"
 CY = "March 31, 2026"          # current year column caption
 PY = "March 31, 2025"          # previous year column caption
 GREY = "D9D9D9"                # header-row shading as in the reference
-HL = "FFFF99"                  # light-yellow: open point for confirmation (draft only)
+HIGHLIGHT = False              # draft highlighting of open points - off in the final statements
+HL = "FFFF99"                  # light-yellow used when HIGHLIGHT is on
 
 # Indian grouping with accounting-style padding, negatives in brackets (values >= 1 lakh get the lakh comma)
 NUM = r'[>=100000]_(* ##\,##\,##0_);[<=-100000]_(* \(##\,##\,##0\);_(* #,##0_)'
@@ -66,7 +67,7 @@ class Page:
             cell.value = v
         cell.font = Font(name=FONT, size=size, bold=bold, italic=italic, underline=underline)
         cell.alignment = Alignment(horizontal=h, vertical=v_, wrap_text=wrap, indent=indent)
-        if hl:
+        if hl and HIGHLIGHT:
             cell.fill = PatternFill("solid", fgColor=HL)
         elif fill:
             cell.fill = PatternFill("solid", fgColor=fill)
@@ -234,11 +235,7 @@ def signature_block(pg, r, col_left, col_right, size=7.5):
     pg.cell(r2 + 1, col_right, "Designated Partner", size=size)
     pg.cell(r2 + 2, col_left, "DIN:00329885", size=size)
     pg.cell(r2 + 2, col_right, "DIN:03566928", size=size)
-    pg.cell(r2 + 5, col_left, "Place: Bengaluru", size=size)
-    pg.cell(r2 + 5, col_right, "Place: Bengaluru", size=size)
-    pg.cell(r2 + 6, col_left, "Date: ", size=size, hl=True)
-    pg.cell(r2 + 6, col_right, "Date: ", size=size, hl=True)
-    return r2 + 6
+    return r2 + 2
 
 
 def build_balance_sheet(wb):
@@ -1234,7 +1231,6 @@ def main(out):
     build_notes_8_10(wb)
     build_notes_11_12(wb)
     build_notes_13_14(wb)
-    build_review(wb)
     wb.save(out)
     print("written", out)
 

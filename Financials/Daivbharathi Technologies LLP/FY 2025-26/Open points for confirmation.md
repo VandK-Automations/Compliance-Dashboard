@@ -5,8 +5,9 @@ presentation format of the signed FY 2024-25 statements (`Daiv_Financials_2024_2
 over exactly as provided; nothing has been computed, rounded or re-classified. The previous-year column is filled
 from the signed FY 2024-25 statements.
 
-Yellow cells in the workbook / PDF mark the open points below. The last sheet of the workbook ("Open points –
-delete before use") repeats this list. Once the points are confirmed the highlights and that sheet will be removed.
+The statements carry no draft markings: the highlighting and the draft review sheet have been removed, and the
+Place and Date lines have been taken off both signature blocks. The open points below are still open and are
+recorded here only. Tell me the answers and I will apply them.
 
 ## A. Open points requiring your confirmation
 
@@ -21,7 +22,7 @@ delete before use") repeats this list. Once the points are confirmed the highlig
 3. **Partners' contribution 90,000 vs 1,00,000.** FY 2024-25 shows 1,00,000 introduced (Samartha 90,000 / Manasa
    10,000) with "Receivable From Partner" 10,000 in other current assets. FY 2025-26 shows contribution received
    90,000 and no receivable. The FY 2025-26 statements do not give the partner-wise split, the opening balance or
-   the amount introduced during the year (Note 2.1 B and D are blank). Those cells in Note 3A are left open.
+   the amount introduced during the year (Note 2.1 B and D are blank). Those cells in Note 3A are left blank.
 4. **Classification of the loan (30,47,564).** FY 2024-25: Short-term borrowings – "Loans and advances from related
    parties" (7,80,680). FY 2025-26: Long-term borrowings – Unsecured – "Loans and advances - Others" (Note 2.3),
    while Note 2.9 lists the same balance as a related-party balance. The draft keeps each year as provided
@@ -52,7 +53,8 @@ delete before use") repeats this list. Once the points are confirmed the highlig
     "Samartha R N", "Manasa Nagabhushanam" and "Manasa Nagabhushnam" in different places, and "DIN". The FY 2025-26
     statements use "MANASA NAGABHUSHNAM" and "DPIN". The draft replicates the reference text in each place.
 12. **Text corrections** – see section B. Tell me if you prefer the text exactly as in the reference.
-13. **Signing date.** Place is kept as Bengaluru; the date on the Balance Sheet and P&L is left blank.
+13. **Place and date.** Both have been removed from the signature blocks on the Balance Sheet and the Statement
+    of Profit and Loss, as instructed. The reference format carried "Place: Bengaluru" and a signing date there.
 
 ## B. Text corrections made to the reference wording (everything else is verbatim)
 
@@ -109,7 +111,7 @@ Previous-year (FY 2024-25) figures are exactly those of the signed statements: (
 
 ## D. Files
 
-* `Daivbharathi_Technologies_LLP_Financials_FY_2025-26.xlsx` – editable workbook, one sheet per printed page
+* `Daivbharathi_Technologies_LLP_Financials_FY_2025-26.xlsx` – editable workbook, 9 sheets, one per printed page
   (fonts: Century Gothic, as in the reference; print set-up A4 with the reference margins).
 * `Daivbharathi_Technologies_LLP_Financials_FY_2025-26.pdf` – print preview of the workbook. The preview was
   rendered on a machine without Century Gothic, using the metric-compatible URW Gothic; printing the workbook from
