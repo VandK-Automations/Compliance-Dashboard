@@ -13,6 +13,12 @@ Every figure is carried over exactly as provided. Nothing has been computed, rou
 The statements carry no draft markings, and the Place and Date lines have been removed from both
 signature blocks.
 
+Presentation is matched to the reference: Century Gothic throughout, black text and rules, and the
+header-row shading set to the lavender #D9D5E9 sampled from the reference scan. The shade was measured
+from roughly 70,000 clean interior pixels across eleven header bands on five pages, after excluding
+paper white and ink; the scan's white point is a true #FFFFFF, so no white-balance correction was
+needed.
+
 ## A. Agreement with the ITR-5
 
 The ITR-5 reconciles to the statements without a single difference.

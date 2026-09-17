@@ -20,7 +20,8 @@ from openpyxl.cell.text import InlineFont
 FONT = "Century Gothic"
 CY = "March 31, 2026"          # current year column caption
 PY = "March 31, 2025"          # previous year column caption
-GREY = "D9D9D9"                # header-row shading as in the reference
+SHADE = "D9D5E9"              # header-row shading, sampled from the reference scan
+GREY = SHADE                  # kept as an alias: existing call sites pass fill=GREY
 HIGHLIGHT = False              # draft highlighting of open points - off in the final statements
 HL = "FFFF99"                  # light-yellow used when HIGHLIGHT is on
 
